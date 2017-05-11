@@ -5,6 +5,8 @@
  */
 package zombie;
 
+import java.awt.Point;
+
 /**
  *
  * @author gipao
@@ -12,10 +14,21 @@ package zombie;
 public class Rectangulo {
     private int x;
     private int y;
+    private int height=97;
+    private int width=60;
+    private int vidas=3;
 
     public Rectangulo(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public int getVidas() {
+        return vidas;
+    }
+
+    public void setVidas(int vidas) {
+        this.vidas = vidas;
     }
 
     public int getX() {
@@ -34,4 +47,12 @@ public class Rectangulo {
         this.y = y;
     }
    
+    public boolean contains(Point mp,int offsetx,int offsety){
+        if(((mp.x>=this.x+offsetx)&&(mp.x<= this.x+width+offsetx))&&
+            (mp.y>=this.y+offsety)&&(mp.y<=this.y+height+offsety)){
+         return true;   
+        }
+        return false;
+    }
+    
 }

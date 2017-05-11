@@ -6,6 +6,7 @@
 package zombie;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Random;
 import javafx.scene.paint.Color;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -30,7 +33,8 @@ public class Nivel2 extends JPanel implements ActionListener, MouseListener {
     private int Delay = 20;
     private final Color color;
     private ArrayList<Rectangulo> rectangulos;
-
+    private Zombie roberto = new Zombie(100, 300);
+    
     public Nivel2() {
         timer = new Timer(Delay, this);
         this.addMouseListener(this);
@@ -38,30 +42,37 @@ public class Nivel2 extends JPanel implements ActionListener, MouseListener {
         timer.start();
         this.rectangulos = new ArrayList<>();
         llenarRectangulos();
-
     }
 
     public void llenarRectangulos() {
+        int iniX = 500;
+        int iniY = 0;
+        Random r = new Random();
         for (int i = 0; i < 20; i++) {
-            this.rectangulos.add(new Rectangulo(x,y));
+            iniX += 60 + Math.abs(r.nextInt() % 71);
+            iniY = 250 + Math.abs(r.nextInt() % 130);
+            this.rectangulos.add(new Rectangulo(iniX, iniY));
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+         
+        Image ciudad = cargarImagen("calle.jpg");
+        g.drawImage(ciudad, 0, 0, null);
+        
         g.drawString("Colisiones", 600, 30);
-        g.drawString(": xxx", 670, 30);
-        
-        g.drawRect( 100, 360, 80, 100);
-        
+        g.drawString(": " + roberto.getColisiones(), 670, 30);
+        //100,360
+        g.drawRect(roberto.getX(), roberto.getY(), roberto.getWidth(), roberto.getHeight());
+
         for (int i = 0; i < 20; i++) {
-            int x = this.rectangulos.get( i ).getX( );
-            int y = this.rectangulos.get( i ).getY( );
-           
-            this.rectangulos.get( i ).setX( this.x );
-            g.drawRect(x + 500, y + 360, 60, 100);
+            int xr = x + this.rectangulos.get(i).getX();
+            int yr = y + this.rectangulos.get(i).getY();
+            if (rectangulos.get(i).getVidas() > 0) {
+                g.drawRect(xr, yr, 60, 97);
+            }
         }
 
     }
@@ -72,15 +83,22 @@ public class Nivel2 extends JPanel implements ActionListener, MouseListener {
         repaint();
     }
 
-    public Rectangle getBounds() {
-        return new Rectangle(x + 10, 320, 120, 60);
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
         Point mp = e.getPoint();
-        if (getBounds().contains(mp)) {
-            this.timer.stop();
+        for (Rectangulo rec : this.rectangulos) {
+            if (rec.contains(mp, x, y)) {
+                rec.setVidas(rec.getVidas() - 1);
+            }
+        }
+    }
+
+    public void DetectarColision() {
+
+        for (Rectangulo rec : this.rectangulos) {
+            if (roberto.intersects(rec)) {
+                roberto.setColisiones(roberto.getColisiones() + 1);
+            }
         }
     }
 
@@ -104,4 +122,9 @@ public class Nivel2 extends JPanel implements ActionListener, MouseListener {
 
     }
 
+    public Image cargarImagen(String imageName) {
+        ImageIcon ii = new ImageIcon(imageName);
+        Image image = ii.getImage();
+        return image;
+    }
 }
