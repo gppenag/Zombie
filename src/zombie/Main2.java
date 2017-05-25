@@ -16,7 +16,7 @@ public class Main2 {
     public static void main(String[] args) {
         TestPaintComponet2 frame = new TestPaintComponet2();
         frame.setTitle("TestPainComponent");
-        frame.setSize(800, 500);
+        frame.setSize(800, 530);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
